@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#1D9E75">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RechargeTrack">
+<title>RechargeTrack</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --g:#1D9E75;--gd:#0F6E56;--gl:#E1F5EE;--gt:#085041;
+  --a:#BA7517;--al:#FAEEDA;--at:#633806;
+  --r:#A32D2D;--rl:#FCEBEB;--rt:#711F1F;
+  --bl:#E6F1FB;--bt:#0C447C;
+  --cl:#FAECE7;--ct:#712B13;
+  --pl:#EEEDFE;--pt:#3C3489;
+  --bg:#F4F5F2;--sur:#FFFFFF;--bdr:#E0E2DC;--bdr2:#C5C8BF;
+  --tx:#18191A;--tx2:#55584F;--tx3:#92958C;
+  --rad:10px;--rad-lg:16px;--rad-pill:999px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --f:'DM Sans',system-ui,sans-serif;--m:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--f);color:var(--tx);font-size:16px}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:480px;margin:0 auto;background:var(--bg)}
+
+.topbar{background:var(--sur);border-bottom:1px solid var(--bdr);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;padding-top:calc(12px + env(safe-area-inset-top,0px))}
+.tlogo{display:flex;align-items:center;gap:9px}
+.ticon{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+.topbar h1{font-size:17px;font-weight:600;color:var(--tx);letter-spacing:-.01em}
+.tbtn{width:36px;height:36px;border:1px solid var(--bdr);border-radius:var(--rad);background:var(--sur);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx2);font-size:15px;gap:6px}
+.tbtn:active{background:var(--bg)}
+.tbtn-row{display:flex;gap:7px}
+
+.scroll{flex:1;overflow-y:auto;padding:13px 13px calc(68px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
+
+.tab-bar{background:var(--sur);border-top:1px solid var(--bdr);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);position:absolute;bottom:0;left:0;right:0;z-index:50;max-width:480px}
+.tab{flex:1;padding:9px 4px 7px;border:none;background:none;cursor:pointer;font-size:10px;font-family:var(--f);font-weight:600;color:var(--tx3);display:flex;flex-direction:column;align-items:center;gap:3px;letter-spacing:.02em;transition:color .15s}
+.tab i{font-size:21px}
+.tab.on{color:var(--g)}
+
+.card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:14px;margin-bottom:10px;box-shadow:var(--sh)}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.stl{font-size:11px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em}
+
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--rad-lg);padding:12px 14px;box-shadow:var(--sh)}
+.slbl{font-size:11px;color:var(--tx3);margin-bottom:6px;font-weight:500}
+.sval{font-size:26px;font-weight:600;line-height:1}
+.sval.g{color:var(--g)}.sval.a{color:var(--a)}.sval.r{color:var(--r)}
+
+.crow{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--bdr);cursor:pointer}
+.crow:last-child{border-bottom:none;padding-bottom:0}
+.crow:first-child{padding-top:0}
+.crow:active{opacity:.65}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.av0{background:var(--bl);color:var(--bt)}.av1{background:var(--gl);color:var(--gt)}.av2{background:var(--cl);color:var(--ct)}.av3{background:var(--pl);color:var(--pt)}.av4{background:var(--al);color:var(--at)}
+.cname{font-size:14px;font-weight:500;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.csub{font-size:12px;color:var(--tx3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{font-size:10px;padding:3px 9px;border-radius:var(--rad-pill);font-weight:600;flex-shrink:0}
+.ba{background:var(--gl);color:var(--gt)}.bd{background:var(--al);color:var(--at)}.be{background:var(--rl);color:var(--r)}
+
+.btn{padding:9px 15px;border-radius:var(--rad);font-size:13px;font-weight:500;font-family:var(--f);cursor:pointer;border:1px solid var(--bdr2);background:var(--sur);color:var(--tx);display:inline-flex;align-items:center;gap:7px;transition:transform .1s,background .12s;white-space:nowrap;letter-spacing:-.01em}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--g);border-color:var(--g);color:#fff}.btn-p:active{background:var(--gd)}
+.btn-blk{width:100%;justify-content:center}
+.btn-sm{padding:6px 11px;font-size:12px;border-radius:8px}
+.btn-dn{background:var(--rl);border-color:#F09595;color:var(--r)}
+
+input,textarea,select{width:100%;padding:10px 12px;font-size:14px;font-family:var(--f);border:1px solid var(--bdr2);border-radius:var(--rad);background:var(--sur);color:var(--tx);outline:none;-webkit-appearance:none;appearance:none;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(29,158,117,.12)}
+textarea{resize:vertical;line-height:1.6}
+.fl{font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:5px;display:block}
+.fg{margin-bottom:12px}
+.mono{font-family:var(--m)!important;font-size:13px!important;letter-spacing:.04em}
+
+/* Code pool */
+.code-pool{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.code-item{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--bdr);border-radius:8px;padding:8px 10px}
+.code-item.sent{border-color:#9FE1CB;background:#F0FBF7}
+.code-item.used{opacity:.4}
+.code-txt{font-family:var(--m);font-size:12px;color:var(--tx);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.code-client{font-size:11px;color:var(--tx3);flex-shrink:0;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.code-tag{font-size:9px;font-weight:600;border-radius:4px;padding:2px 6px;flex-shrink:0}
+.tg-s{background:var(--gl);color:var(--gt)}.tg-u{background:var(--bdr);color:var(--tx3)}.tg-q{background:var(--al);color:var(--at)}
+.copy-btn{width:24px;height:24px;border:none;background:none;cursor:pointer;color:var(--tx3);font-size:13px;display:flex;align-items:center;justify-content:center;border-radius:5px;flex-shrink:0}
+.copy-btn:active{background:var(--bdr);color:var(--tx)}
+
+.sw{display:flex;align-items:center;gap:8px;background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--rad);padding:9px 12px;margin-bottom:10px}
+.sw i{color:var(--tx3);font-size:14px;flex-shrink:0}
+.sw input{border:none;background:transparent;padding:0;font-size:14px;box-shadow:none;flex:1}
+.sw input:focus{box-shadow:none}
+
+.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{padding:5px 13px;border-radius:var(--rad-pill);font-size:12px;font-weight:500;font-family:var(--f);border:1px solid var(--bdr2);background:var(--sur);color:var(--tx2);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .12s}
+.chip.on{background:var(--g);border-color:var(--g);color:#fff}
+
+.sms-bubble{background:var(--g);border-radius:14px 14px 4px 14px;padding:10px 14px;color:#fff;font-size:13px;line-height:1.6;margin-top:10px;white-space:pre-wrap;word-break:break-word}
+.sms-meta{font-size:11px;color:var(--tx3);margin-top:5px;text-align:right}
+.char-count{font-size:11px;color:var(--tx3);text-align:right;margin-top:4px}
+.char-count.warn{color:var(--a)}.char-count.over{color:var(--r)}
+
+.log-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--bdr)}
+.log-row:last-child{border-bottom:none}
+.log-dot{width:8px;height:8px;background:var(--g);border-radius:50%;margin-top:5px;flex-shrink:0}
+
+.empty{text-align:center;padding:40px 16px;color:var(--tx3)}
+.empty i{font-size:36px;display:block;margin-bottom:10px;color:var(--bdr2)}
+.empty p{font-size:13px}
+
+.rrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.rrow:last-child{border-bottom:none;padding-bottom:0}
+.rrow:first-child{padding-top:0}
+
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;animation:fi .2s}
+.mb{background:var(--sur);border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));width:100%;max-width:480px;max-height:90dvh;overflow-y:auto;animation:su .25s cubic-bezier(.25,.46,.45,.94)}
+.mh{width:38px;height:4px;background:var(--bdr2);border-radius:var(--rad-pill);margin:0 auto 16px}
+.mt{font-size:17px;font-weight:600;margin-bottom:16px;color:var(--tx)}
+.ma{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.ma .btn{flex:1;justify-content:center}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes su{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.dr{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px}
+.dr:last-child{border-bottom:none}
+.dl{color:var(--tx3);font-weight:500}.dv{color:var(--tx);font-weight:500;text-align:right;max-width:58%}
+
+.snk{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px) + 8px);left:50%;transform:translateX(-50%) translateY(10px);background:#18191A;color:#F4F5F2;padding:9px 18px;border-radius:var(--rad-pill);font-size:13px;font-weight:500;z-index:400;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center}
+.snk.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Bulk textarea hint */
+.hint{font-size:11px;color:var(--tx3);margin-top:5px;line-height:1.5}
+.pool-count{font-size:12px;font-weight:600;color:var(--g);margin-left:6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="tlogo">
+      <div class="ticon"><i class="fa-solid fa-bolt"></i></div>
+      <h1>RechargeTrack</h1>
+    </div>
+    <div class="tbtn-row">
+      <button class="tbtn" onclick="openAddClient()" title="Add client"><i class="fa-solid fa-user-plus"></i></button>
+      <button class="tbtn" onclick="openAddCodes()" title="Add codes"><i class="fa-solid fa-plus"></i></button>
+    </div>
+  </div>
+  <div class="scroll" id="content"></div>
+  <nav class="tab-bar">
+    <button class="tab on" id="tab-dash" onclick="go('dash')"><i class="fa-solid fa-chart-pie"></i>Dashboard</button>
+    <button class="tab" id="tab-clients" onclick="go('clients')"><i class="fa-solid fa-users"></i>Clients</button>
+    <button class="tab" id="tab-codes" onclick="go('codes')"><i class="fa-solid fa-key"></i>Codes</button>
+    <button class="tab" id="tab-sms" onclick="go('sms')"><i class="fa-solid fa-message"></i>SMS</button>
+  </nav>
+</div>
+<div class="snk" id="snk"></div>
+<div id="mr"></div>
+
+<script>
+const SK = 'rt2';
+const AVC = ['av0','av1','av2','av3','av4'];
+
+const ini = n => n.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const avc = id => AVC[id % AVC.length];
+const td = () => new Date().toISOString().split('T')[0];
+const fmtD = d => new Date(d+'T00:00:00').toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'});
+
+function daysTo(sub){
+  const s=new Date(sub+'T00:00:00'), n=new Date(); n.setHours(0,0,0,0);
+  const m=Math.floor((n-s)/(1000*60*60*24*30));
+  const nx=new Date(s); nx.setMonth(nx.getMonth()+m+1);
+  return Math.ceil((nx-n)/(1000*60*60*24));
+}
+
+function cst(c){
+  if(c.status==='expired') return 'expired';
+  return daysTo(c.subscriptionDate)<=5 ? 'due' : 'active';
+}
+
+function bstat(st){
+  const cls={active:'ba',due:'bd',expired:'be'};
+  const lbl={active:'Active',due:'Due soon',expired:'Expired'};
+  return `<span class="badge ${cls[st]}">${lbl[st]}</span>`;
+}
+
+// ---- State ----
+let S = load();
+
+function defState(){
+  return {
+    clients:[
+      {id:1,name:'James Mwangi',phone:'0712345678',desc:'Monthly Standard',subscriptionDate:'2026-04-23',status:'active'},
+      {id:2,name:'Aisha Oduya',phone:'0723456789',desc:'Premium — 2 devices',subscriptionDate:'2026-05-10',status:'active'},
+      {id:3,name:'Samuel Kamau',phone:'0734567890',desc:'',subscriptionDate:'2026-04-01',status:'expired'},
+    ],
+    // Codes are now a flat pool — clientId is assigned by the app, null means available
+    codes:[
+      {id:0,code:'ABCD-1234-EFGH',clientId:1,sent:true,used:false,addedAt:'2026-04-23'},
+      {id:1,code:'IJKL-5678-MNOP',clientId:1,sent:true,used:true,addedAt:'2026-04-23'},
+      {id:2,code:'QRST-9012-UVWX',clientId:1,sent:false,used:false,addedAt:'2026-04-23'},
+      {id:3,code:'YZAB-3456-CDEF',clientId:1,sent:false,used:false,addedAt:'2026-04-23'},
+      {id:4,code:'GHIJ-7890-KLMN',clientId:1,sent:false,used:false,addedAt:'2026-04-23'},
+      {id:5,code:'OPQR-1234-STUV',clientId:2,sent:true,used:true,addedAt:'2026-05-10'},
+      {id:6,code:'WXYZ-5678-ABCD',clientId:2,sent:true,used:false,addedAt:'2026-05-10'},
+      {id:7,code:'EFGH-9012-IJKL',clientId:2,sent:false,used:false,addedAt:'2026-05-10'},
+      {id:8,code:'MNOP-3456-QRST',clientId:2,sent:false,used:false,addedAt:'2026-05-10'},
+      {id:9,code:'UVWX-7890-YZAB',clientId:2,sent:false,used:false,addedAt:'2026-05-10'},
+      {id:10,code:'CDEF-1234-GHIJ',clientId:3,sent:true,used:true,addedAt:'2026-04-01'},
+      {id:11,code:'KLMN-5678-OPQR',clientId:3,sent:true,used:true,addedAt:'2026-04-01'},
+      {id:12,code:'STUV-9012-WXYZ',clientId:3,sent:true,used:true,addedAt:'2026-04-01'},
+      {id:13,code:'ABCD-3456-EFGH',clientId:3,sent:true,used:true,addedAt:'2026-04-01'},
+      {id:14,code:'IJKL-7890-MNOP',clientId:3,sent:true,used:true,addedAt:'2026-04-01'},
+    ],
+    smsLog:[],
+    ncid:4, nkid:15,
+    tab:'dash', cf:'all', cs:'',
+  };
+}
+
+function load(){
+  try{ const r=localStorage.getItem(SK); if(r) return JSON.parse(r); }catch(e){}
+  return defState();
+}
+function save(){ try{ localStorage.setItem(SK,JSON.stringify(S)); }catch(e){} }
+
+// Auto-assign: distribute available codes to clients who need them (5 per client)
+// Each client gets a "slot" of 5 codes. Available codes fill the next empty slot in order.
+// This is called after any state change that might affect assignment.
+function autoAssign(){
+  // For each client, count how many codes they have that aren't used
+  // Don't touch codes that are already assigned
+  // Just assign null-clientId codes to clients who have fewer than 5 live codes
+  const available = S.codes.filter(c => c.clientId === null);
+  if(!available.length) return;
+
+  // Active clients sorted by subscriptionDate ascending (earliest renewals first)
+  const needyClients = S.clients
+    .filter(c => c.status !== 'expired')
+    .sort((a,b) => daysTo(a.subscriptionDate) - daysTo(b.subscriptionDate));
+
+  let ai = 0;
+  for(const cl of needyClients){
+    const live = S.codes.filter(c => c.clientId === cl.id && !c.used).length;
+    const need = Math.max(0, 5 - live);
+    for(let i = 0; i < need && ai < available.length; i++, ai++){
+      available[ai].clientId = cl.id;
+      available[ai].addedAt = td();
+    }
+  }
+  save();
+}
+
+// ---- Render ----
+function go(tab){
+  S.tab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab-'+tab).classList.add('on');
+  render();
+}
+
+function render(){
+  const el = document.getElementById('content');
+  if(S.tab==='dash') el.innerHTML = rDash();
+  else if(S.tab==='clients') el.innerHTML = rClients();
+  else if(S.tab==='codes') el.innerHTML = rCodes();
+  else if(S.tab==='sms') el.innerHTML = rSMS();
+}
+
+function rDash(){
+  const active=S.clients.filter(c=>cst(c)==='active').length;
+  const due=S.clients.filter(c=>cst(c)==='due').length;
+  const expired=S.clients.filter(c=>cst(c)==='expired').length;
+  const pool=S.codes.filter(c=>c.clientId===null).length;
+
+  const renewals=S.clients
+    .filter(c=>{const d=daysTo(c.subscriptionDate);return d<=7&&cst(c)!=='expired';})
+    .sort((a,b)=>daysTo(a.subscriptionDate)-daysTo(b.subscriptionDate));
+
+  const rrHTML = renewals.length ? `
+<div class="sh" style="margin-top:4px"><span class="stl">Renewing this week</span></div>
+<div class="card">
+${renewals.map(c=>{const d=daysTo(c.subscriptionDate),lbl=d===0?'Today':d===1?'Tomorrow':d+' days',col=d<=2?'var(--r)':'var(--a)';return`
+<div class="rrow">
+  <div class="av ${avc(c.id)}">${ini(c.name)}</div>
+  <div style="flex:1;min-width:0"><div class="cname">${c.name}</div><div class="csub">${c.phone}</div></div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+    <span style="font-size:12px;font-weight:600;color:${col}">${lbl}</span>
+    <button class="btn btn-sm btn-p" onclick="smsFor(${c.id})"><i class="fa-solid fa-message"></i>SMS</button>
+  </div>
+</div>`;}).join('')}
+</div>` : '';
+
+  return `
+<div class="sgrid">
+  <div class="stat"><div class="slbl">Active</div><div class="sval g">${active}</div></div>
+  <div class="stat"><div class="slbl">Due soon</div><div class="sval a">${due}</div></div>
+  <div class="stat"><div class="slbl">Expired</div><div class="sval r">${expired}</div></div>
+  <div class="stat"><div class="slbl">Code pool</div><div class="sval">${pool}</div></div>
+</div>
+${rrHTML}
+<div class="sh" style="margin-top:4px"><span class="stl">Clients</span><button class="btn btn-sm btn-p" onclick="go('clients')">View all</button></div>
+<div class="card">
+${S.clients.slice(0,5).map(cRowHTML).join('')}
+${S.clients.length>5?`<div style="padding-top:10px;text-align:center"><button class="btn btn-sm" onclick="go('clients')">+${S.clients.length-5} more</button></div>`:''}
+</div>`;
+}
+
+function cRowHTML(c){
+  const st=cst(c);
+  return `<div class="crow" onclick="openDetail(${c.id})">
+  <div class="av ${avc(c.id)}">${ini(c.name)}</div>
+  <div style="flex:1;min-width:0"><div class="cname">${c.name}</div><div class="csub">${c.phone}${c.desc?' · '+c.desc:''}</div></div>
+  ${bstat(st)}
+</div>`;
+}
+
+function rClients(){
+  const f=S.cf||'all', q=(S.cs||'').toLowerCase();
+  const list=S.clients.filter(c=>{
+    if(q&&!c.name.toLowerCase().includes(q)&&!c.phone.includes(q)) return false;
+    if(f==='active') return cst(c)==='active';
+    if(f==='due') return cst(c)==='due';
+    if(f==='expired') return cst(c)==='expired';
+    return true;
+  });
+  const cnt={all:S.clients.length,active:S.clients.filter(c=>cst(c)==='active').length,due:S.clients.filter(c=>cst(c)==='due').length,expired:S.clients.filter(c=>cst(c)==='expired').length};
+  return `
+<div class="sw"><i class="fa-solid fa-magnifying-glass"></i><input type="search" placeholder="Search name or number…" value="${S.cs||''}" oninput="S.cs=this.value;render()" /></div>
+<div class="chips">
+  ${['all','active','due','expired'].map(k=>`<button class="chip ${f===k?'on':''}" onclick="S.cf='${k}';render()">${k==='all'?'All':k==='due'?'Due soon':k[0].toUpperCase()+k.slice(1)} (${cnt[k]})</button>`).join('')}
+</div>
+${list.length?`<div class="card">${list.map(cRowHTML).join('')}</div>`:`<div class="empty"><i class="fa-solid fa-users"></i><p>No clients found</p></div>`}
+<button class="btn btn-p btn-blk" style="margin-top:4px" onclick="openAddClient()"><i class="fa-solid fa-user-plus"></i>Add new client</button>`;
+}
+
+function rCodes(){
+  const pool = S.codes.filter(c=>c.clientId===null);
+  const byClient = S.clients.map(cl=>({cl,codes:S.codes.filter(c=>c.clientId===cl.id)})).filter(x=>x.codes.length);
+  return `
+<div class="sh"><span class="stl">Code pool <span class="pool-count">${pool.length} available</span></span><button class="btn btn-sm btn-p" onclick="openAddCodes()"><i class="fa-solid fa-plus"></i>Add codes</button></div>
+${pool.length?`<div class="card"><div class="code-pool">${pool.map(c=>`
+<div class="code-item">
+  <span class="code-txt">${c.code}</span>
+  <span class="code-tag tg-q">Unassigned</span>
+  <button class="copy-btn" onclick="cpCode('${c.code}')" title="Copy"><i class="fa-regular fa-copy"></i></button>
+</div>`).join('')}</div></div>`:`<div class="empty"><i class="fa-solid fa-inbox"></i><p>Pool is empty — add more codes</p></div>`}
+
+${byClient.map(({cl,codes})=>`
+<div class="sh" style="margin-top:14px">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="av ${avc(cl.id)}" style="width:28px;height:28px;font-size:10px">${ini(cl.name)}</div>
+    <span class="stl">${cl.name}</span>
+  </div>
+  <button class="btn btn-sm" onclick="smsFor(${cl.id})"><i class="fa-solid fa-message"></i>SMS</button>
+</div>
+<div class="card"><div class="code-pool">${codes.map(c=>`
+<div class="code-item ${c.used?'used':c.sent?'sent':''}">
+  <span class="code-txt">${c.code}</span>
+  ${c.used?`<span class="code-tag tg-u">Used</span>`:c.sent?`<span class="code-tag tg-s">Sent</span>`:`<button class="copy-btn" onclick="cpCode('${c.code}')" title="Copy"><i class="fa-regular fa-copy"></i></button>`}
+</div>`).join('')}</div></div>`).join('')}`;
+}
+
+function buildMsg(clientId){
+  const cl=S.clients.find(c=>c.id==clientId);
+  if(!cl) return '';
+  const codes=S.codes.filter(c=>c.clientId===cl.id&&!c.sent&&!c.used);
+  const list=codes.slice(0,5).map(c=>c.code).join('\n');
+  return `Hi ${cl.name.split(' ')[0]}, your recharge codes:\n\n${list||'(no new codes available)'}\n\nThank you!`;
+}
+
+function rSMS(){
+  const logHTML=S.smsLog.length?`
+<div class="sh" style="margin-top:14px"><span class="stl">Sent log (${S.smsLog.length})</span></div>
+<div class="card">
+${S.smsLog.slice().reverse().slice(0,20).map(s=>`<div class="log-row">
+  <div class="log-dot"></div>
+  <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">${s.name} · ${s.phone}</div><div style="font-size:12px;color:var(--tx3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.preview}</div></div>
+  <div style="font-size:11px;color:var(--tx3);flex-shrink:0">${s.time}</div>
+</div>`).join('')}
+</div>` : '';
+
+  return `
+<div class="card">
+  <div class="fg"><label class="fl">Client</label>
+    <select id="sc" onchange="onSCh()">
+      <option value="">— select client —</option>
+      ${S.clients.map(c=>`<option value="${c.id}">${c.name} (${c.phone})</option>`).join('')}
+    </select>
+  </div>
+  <div class="fg"><label class="fl">Message</label>
+    <textarea id="sm" rows="6" placeholder="Select a client to auto-fill the codes…" oninput="uCC(this)"></textarea>
+    <div class="char-count" id="cc">0 / 160</div>
+  </div>
+  <div id="sp"></div>
+  <button class="btn btn-p btn-blk" onclick="doSMS()"><i class="fa-solid fa-paper-plane"></i>Send SMS</button>
+</div>
+${logHTML}`;
+}
+
+function onSCh(){
+  const sel=document.getElementById('sc'),ta=document.getElementById('sm'),pr=document.getElementById('sp');
+  if(!sel||!ta) return;
+  if(sel.value){
+    ta.value=buildMsg(sel.value);
+    const cl=S.clients.find(c=>c.id==sel.value);
+    if(pr&&cl) pr.innerHTML=`<div class="sms-bubble">${ta.value.replace(/\n/g,'<br>')}</div><div class="sms-meta">To: ${cl.phone}</div>`;
+  } else { ta.value=''; if(pr) pr.innerHTML=''; }
+  uCC(ta);
+}
+
+function uCC(el){
+  const n=el.value.length,cc=document.getElementById('cc');
+  if(!cc) return;
+  cc.textContent=n+' / 160';
+  cc.className='char-count'+(n>160?' over':n>130?' warn':'');
+}
+
+function doSMS(){
+  const sel=document.getElementById('sc'),ta=document.getElementById('sm');
+  if(!sel||!sel.value){snk('Select a client first');return;}
+  if(!ta||!ta.value.trim()){snk('Message is empty');return;}
+  const cl=S.clients.find(c=>c.id==sel.value);
+  S.codes.filter(c=>c.clientId==sel.value&&!c.sent&&!c.used).slice(0,5).forEach(c=>c.sent=true);
+  S.smsLog.push({name:cl.name,phone:cl.phone,time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),preview:ta.value.slice(0,60)});
+  save(); render();
+  snk('Opening SMS app…');
+  setTimeout(()=>{ window.location.href=`sms:${cl.phone}?body=${encodeURIComponent(ta.value)}`; },300);
+}
+
+function smsFor(id){
+  S.tab='sms';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('tab-sms').classList.add('on');
+  render();
+  setTimeout(()=>{ const s=document.getElementById('sc'); if(s){s.value=id;onSCh();} },60);
+}
+
+function openAddClient(){
+  showMo(`
+<div class="mh"></div>
+<div class="mt">New client</div>
+<div class="fg"><label class="fl">Full name *</label><input id="nc-n" type="text" placeholder="James Mwangi" /></div>
+<div class="fg"><label class="fl">Phone number *</label><input id="nc-p" type="tel" placeholder="0712 345 678" /></div>
+<div class="fg"><label class="fl">Description</label><textarea id="nc-d" rows="2" placeholder="e.g. Monthly Standard, 2 devices…"></textarea></div>
+<div class="fg"><label class="fl">Subscription start date</label><input id="nc-dt" type="date" value="${td()}" /></div>
+<div class="ma">
+  <button class="btn" onclick="closeMo()">Cancel</button>
+  <button class="btn btn-p" onclick="saveNewClient()"><i class="fa-solid fa-check"></i>Add client</button>
+</div>`);
+}
+
+function saveNewClient(){
+  const name=document.getElementById('nc-n').value.trim();
+  const phone=document.getElementById('nc-p').value.trim();
+  if(!name){snk('Name is required');return;}
+  if(!phone){snk('Phone number is required');return;}
+  S.clients.push({id:S.ncid++,name,phone,desc:document.getElementById('nc-d').value.trim(),subscriptionDate:document.getElementById('nc-dt').value||td(),status:'active'});
+  autoAssign();
+  save(); closeMo(); render(); snk('Client added!');
+}
+
+function openAddCodes(){
+  const pool=S.codes.filter(c=>c.clientId===null).length;
+  showMo(`
+<div class="mh"></div>
+<div class="mt">Add codes to pool</div>
+<div class="fg">
+  <label class="fl">Paste codes (one per line)</label>
+  <textarea id="bc-raw" rows="8" class="mono" placeholder="XXXX-1234-ABCD&#10;YYYY-5678-EFGH&#10;ZZZZ-9012-IJKL&#10;…" oninput="previewBatch(this)"></textarea>
+  <div class="hint" id="bc-hint">The app will automatically assign codes to clients who need them.</div>
+</div>
+<div id="bc-preview"></div>
+<div class="ma">
+  <button class="btn" onclick="closeMo()">Cancel</button>
+  <button class="btn btn-p" onclick="saveBatch()"><i class="fa-solid fa-check"></i>Add to pool</button>
+</div>`);
+}
+
+function previewBatch(el){
+  const lines=el.value.split('\n').map(l=>l.trim()).filter(Boolean);
+  const hint=document.getElementById('bc-hint');
+  const prev=document.getElementById('bc-preview');
+  if(!hint||!prev) return;
+  if(!lines.length){hint.textContent='The app will automatically assign codes to clients who need them.';prev.innerHTML='';return;}
+  const dups=lines.filter(l=>S.codes.find(c=>c.code===l));
+  hint.textContent=`${lines.length} code${lines.length>1?'s':''} detected${dups.length?' · '+dups.length+' duplicate(s) will be skipped':''}`;
+  // Show what assignments would look like
+  const needyClients=S.clients.filter(c=>c.status!=='expired').sort((a,b)=>daysTo(a.subscriptionDate)-daysTo(b.subscriptionDate));
+  const assignments=[];
+  let pool=lines.filter(l=>!S.codes.find(c=>c.code===l));
+  let pi=0;
+  for(const cl of needyClients){
+    const live=S.codes.filter(c=>c.clientId===cl.id&&!c.used).length;
+    const need=Math.max(0,5-live);
+    const count=Math.min(need,pool.length-pi);
+    if(count>0){assignments.push(`${cl.name}: +${count} code${count>1?'s':''}`);}
+    pi+=count;
+    if(pi>=pool.length) break;
+  }
+  const rem=pool.length-pi;
+  if(rem>0) assignments.push(`Pool (unassigned): ${rem}`);
+  prev.innerHTML=assignments.length?`<div style="background:var(--gl);border-radius:var(--rad);padding:9px 12px;font-size:12px;color:var(--gt);margin-bottom:8px;line-height:1.8"><strong>Assignment preview:</strong><br>${assignments.join('<br>')}</div>`:'';
+}
+
+function saveBatch(){
+  const raw=document.getElementById('bc-raw');
+  if(!raw) return;
+  const lines=raw.value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length){snk('Enter at least one code');return;}
+  let added=0,skipped=0;
+  lines.forEach(code=>{
+    if(S.codes.find(c=>c.code===code)){skipped++;return;}
+    S.codes.push({id:S.nkid++,code,clientId:null,sent:false,used:false,addedAt:td()});
+    added++;
+  });
+  autoAssign();
+  save(); closeMo(); render();
+  snk(`${added} code${added>1?'s':''} added${skipped?' · '+skipped+' skipped':''}`);
+}
+
+function openDetail(id){
+  const cl=S.clients.find(c=>c.id===id);
+  if(!cl) return;
+  const st=cst(cl),days=daysTo(cl.subscriptionDate);
+  const codes=S.codes.filter(c=>c.clientId===id);
+  const sent=codes.filter(c=>c.sent).length,used=codes.filter(c=>c.used).length,unsent=codes.filter(c=>!c.sent&&!c.used).length;
+  showMo(`
+<div class="mh"></div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+  <div class="av ${avc(cl.id)}" style="width:48px;height:48px;font-size:16px">${ini(cl.name)}</div>
+  <div style="flex:1;min-width:0"><div style="font-size:17px;font-weight:600;color:var(--tx)">${cl.name}</div><div style="font-size:13px;color:var(--tx3)">${cl.phone}</div></div>
+  ${bstat(st)}
+</div>
+${cl.desc?`<div style="background:var(--bg);border-radius:var(--rad);padding:9px 12px;font-size:13px;color:var(--tx2);margin-bottom:12px;border:1px solid var(--bdr)">${cl.desc}</div>`:''}
+<div class="card" style="margin-bottom:12px">
+  <div class="dr"><span class="dl">Since</span><span class="dv">${fmtD(cl.subscriptionDate)}</span></div>
+  <div class="dr"><span class="dl">Next renewal</span><span class="dv" style="color:${days<=2?'var(--r)':days<=5?'var(--a)':'var(--tx)'}">${st==='expired'?'Expired':days===0?'Today':days===1?'Tomorrow':days+' days'}</span></div>
+  <div class="dr"><span class="dl">Codes total</span><span class="dv">${codes.length}</span></div>
+  <div class="dr"><span class="dl">Sent / Used</span><span class="dv">${sent} / ${used}</span></div>
+  <div class="dr"><span class="dl">Ready to send</span><span class="dv" style="color:var(--g)">${unsent}</span></div>
+</div>
+${codes.length?`<div class="stl" style="margin-bottom:8px">Codes</div><div class="code-pool">${codes.map(c=>`<div class="code-item ${c.used?'used':c.sent?'sent':''}"><span class="code-txt">${c.code}</span>${c.used?`<span class="code-tag tg-u">Used</span>`:c.sent?`<span class="code-tag tg-s">Sent</span>`:''}</div>`).join('')}</div>`:''}
+<div class="ma" style="margin-top:14px">
+  <button class="btn btn-p" style="flex:1" onclick="smsFor(${cl.id});closeMo()"><i class="fa-solid fa-message"></i>SMS</button>
+  <button class="btn" style="flex:1" onclick="openEdit(${cl.id})"><i class="fa-solid fa-pen"></i>Edit</button>
+  <button class="btn ${st==='expired'?'':'btn-dn'}" style="flex:1" onclick="togExp(${cl.id})">${st==='expired'?'<i class="fa-solid fa-rotate-left"></i>Restore':'<i class="fa-solid fa-ban"></i>Expire'}</button>
+</div>`);
+}
+
+function openEdit(id){
+  const cl=S.clients.find(c=>c.id===id);
+  if(!cl) return;
+  showMo(`
+<div class="mh"></div>
+<div class="mt">Edit client</div>
+<div class="fg"><label class="fl">Full name *</label><input id="ec-n" type="text" value="${cl.name}" /></div>
+<div class="fg"><label class="fl">Phone number *</label><input id="ec-p" type="tel" value="${cl.phone}" /></div>
+<div class="fg"><label class="fl">Description</label><textarea id="ec-d" rows="2">${cl.desc||''}</textarea></div>
+<div class="fg"><label class="fl">Subscription start date</label><input id="ec-dt" type="date" value="${cl.subscriptionDate}" /></div>
+<div class="ma">
+  <button class="btn" onclick="closeMo()">Cancel</button>
+  <button class="btn btn-p" onclick="saveEdit(${id})"><i class="fa-solid fa-check"></i>Save</button>
+</div>`);
+}
+
+function saveEdit(id){
+  const cl=S.clients.find(c=>c.id===id);
+  if(!cl) return;
+  const n=document.getElementById('ec-n').value.trim(),p=document.getElementById('ec-p').value.trim();
+  if(!n||!p){snk('Name and phone required');return;}
+  cl.name=n;cl.phone=p;
+  cl.desc=document.getElementById('ec-d').value.trim();
+  cl.subscriptionDate=document.getElementById('ec-dt').value||cl.subscriptionDate;
+  save();closeMo();render();snk('Saved!');
+}
+
+function togExp(id){
+  const cl=S.clients.find(c=>c.id===id);
+  if(!cl) return;
+  cl.status=cl.status==='expired'?'active':'expired';
+  if(cl.status==='active') autoAssign();
+  save();closeMo();render();
+  snk(cl.status==='expired'?cl.name+' marked expired':cl.name+' restored');
+}
+
+function cpCode(code){
+  navigator.clipboard.writeText(code).then(()=>snk('Copied!')).catch(()=>snk(code));
+}
+
+function showMo(html){
+  document.getElementById('mr').innerHTML=`<div class="mo" onclick="if(event.target===this)closeMo()"><div class="mb">${html}</div></div>`;
+}
+function closeMo(){ document.getElementById('mr').innerHTML=''; }
+
+let st;
+function snk(msg){
+  const s=document.getElementById('snk');
+  s.textContent=msg;s.classList.add('on');
+  clearTimeout(st);st=setTimeout(()=>s.classList.remove('on'),2600);
+}
+
+// Service worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+
+render();
+</script>
+</body>
+</html>
